@@ -33,7 +33,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ✅ FREE DISK SPACE (VERY IMPORTANT)
+      # FREE DISK SPACE (VERY IMPORTANT)
       - name: Free Disk Space
         run: |
           echo "Freeing disk space..."
@@ -58,7 +58,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # ✅ BUILD IMAGE
+      # BUILD IMAGE
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
@@ -101,22 +101,22 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # ✅ CLEAN OLD CONTAINERS
+      # CLEAN OLD CONTAINERS
       - name: Stop and remove old container
         run: |
           docker ps -aq --filter "name=networksecurity" | grep -q . && docker stop networksecurity && docker rm -fv networksecurity || true
 
-      # ✅ REMOVE UNUSED IMAGES
+      # REMOVE UNUSED IMAGES
       - name: Clean Docker System
         run: |
           docker system prune -af || true
 
-      # ✅ PULL LATEST IMAGE
+      # PULL LATEST IMAGE
       - name: Pull latest image
         run: |
           docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      # ✅ RUN CONTAINER
+      # RUN CONTAINER
       - name: Run Docker Container
         run: |
 
@@ -129,6 +129,6 @@ jobs:
             -e AWS_REGION='${{ secrets.AWS_REGION }}' \
             ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      # ✅ VERIFY CONTAINER
+      # VERIFY CONTAINER
       - name: Verify running containers
         run: docker ps
