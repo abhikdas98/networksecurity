@@ -31,7 +31,7 @@ import mlflow
 import mlflow.sklearn
 import dagshub
 
-# ✅ Initialize DagsHub MLflow tracking
+# Initialize DagsHub MLflow tracking
 dagshub.init(repo_owner='abhikdas98', repo_name='networksecurity', mlflow=True)
 
 
@@ -47,7 +47,7 @@ class ModelTrainer:
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
-    # ✅ Clean MLflow logging
+    # Clean MLflow logging
     def log_mlflow(self, best_model, best_model_name, train_metric, test_metric):
 
         mlflow.log_param("best_model", best_model_name)
@@ -97,7 +97,7 @@ class ModelTrainer:
                 }
             }
 
-            # 🔍 Evaluate models
+            # Evaluate models
             model_report = evaluate_models(
                 X_train=X_train,
                 y_train=y_train,
@@ -107,7 +107,7 @@ class ModelTrainer:
                 param=params
             )
 
-            # ✅ Get best model
+            # Get best model
             best_model_score = max(sorted(model_report.values()))
 
             best_model_name = list(model_report.keys())[
@@ -125,7 +125,7 @@ class ModelTrainer:
             train_metric = get_classification_score(y_train, y_train_pred)
             test_metric = get_classification_score(y_test, y_test_pred)
 
-            # ✅ SINGLE MLflow run (VERY IMPORTANT)
+            # SINGLE MLflow run (VERY IMPORTANT)
             mlflow.set_experiment("network-security")
 
             with mlflow.start_run():
@@ -137,22 +137,22 @@ class ModelTrainer:
                     test_metric
                 )
 
-            # ✅ Load preprocessor
+            # Load preprocessor
             preprocessor = load_object(
                 self.data_transformation_artifact.transformed_object_file_path
             )
 
-            # ✅ Fix directory creation
+            # Fix directory creation
             model_file_path = self.model_trainer_config.trained_model_file_path
             os.makedirs(os.path.dirname(model_file_path), exist_ok=True)
 
-            # ✅ Create final model pipeline
+            # Create final model pipeline
             network_model = NetworkModel(
                 preprocessor=preprocessor,
                 model=best_model
             )
 
-            # ✅ Save model correctly
+            # Save model correctly
             save_object(
                 file_path=model_file_path,
                 obj=network_model

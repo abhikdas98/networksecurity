@@ -75,7 +75,7 @@ async def index():
 async def train_route():
     try:
         from networksecurity.pipeline.training_pipeline import TrainingPipeline
-
+        os.makedirs("artifact", exist_ok=True)
         train_pipeline=TrainingPipeline()
         train_pipeline.run_pipeline()
         return Response("Training is successful")
@@ -93,6 +93,7 @@ async def predict_route(request: Request,file: UploadFile = File(...)):
         prediction_df = prepare_prediction_data(df, preprocesor)
         y_pred = network_model.predict(prediction_df)
         df[PREDICTION_COLUMN] = y_pred
+        os.makedirs("predictions_output", exist_ok=True)
         df.to_csv("predictions_output/output.csv", index=False)
 
         table_html = df.to_html(
