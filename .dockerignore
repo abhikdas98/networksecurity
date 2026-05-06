@@ -1,6 +1,7 @@
 venv
 .venv
 env
+
 __pycache__
 *.pyc
 *.pyo
@@ -13,20 +14,6 @@ logs
 .git
 .github
 
-notebook
-notebooks
-
-*.csv
-*.xlsx
-
-predictions_output
-
-Dockerfile
-README.md
-
-data
-dataset
-
 *.ipynb
 
-final_model
+predictions_output
