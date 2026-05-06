@@ -2,6 +2,7 @@ import sys
 import os
 
 import certifi
+from flask import request
 ca = certifi.where()
 
 from dotenv import load_dotenv
@@ -92,11 +93,23 @@ async def predict_route(request: Request,file: UploadFile = File(...)):
         prediction_df = prepare_prediction_data(df, preprocesor)
         y_pred = network_model.predict(prediction_df)
         df[PREDICTION_COLUMN] = y_pred
-        df.to_csv('predictions_output/output.csv', index=False)
-        table_html = df.to_html(classes='table table-striped')
-        return templates.TemplateResponse(request, "table.html", {"table": table_html})
-    except HTTPException:
-        raise
+        df.to_csv("predictions_output/output.csv", index=False)
+
+        table_html = df.to_html(
+            classes="table table-striped",
+            index=False
+        )
+
+        context = {
+            "request": request,
+            "table": table_html
+        }
+
+        return templates.TemplateResponse(
+            request=request,
+            name="table.html",
+            context=context
+        )
     except Exception as e:
             raise NetworkSecurityException(e,sys)
 
